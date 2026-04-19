@@ -73,9 +73,9 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
-            <div className="bg-white rounded-3xl w-full max-w-4xl p-8 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-primary">
+            <div className="bg-white rounded-3xl w-full max-w-4xl p-6 shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-primary">
                         {sale ? `Editar Venta ${sale.saleNumber}` : 'Nueva Venta'}
                     </h2>
                     <button onClick={onClose} className="btn-icon">
@@ -83,11 +83,11 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-muted ml-1">Seleccionar Cliente</label>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-1">
+                        <label className="text-xs font-semibold text-muted ml-1">Seleccionar Cliente</label>
                         <select
-                            className="form-control"
+                            className="form-control py-2.5"
                             required
                             value={clientId}
                             onChange={e => setClientId(e.target.value)}
@@ -99,27 +99,27 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                         </select>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <h3 className="font-bold text-main">Detalle de Productos</h3>
+                            <h3 className="text-sm font-bold text-main">Detalle de Productos</h3>
                             <button
                                 type="button"
                                 onClick={handleAddItem}
-                                className="btn btn-ghost text-primary border-primary/20"
+                                className="btn btn-ghost text-primary border-primary/20 py-1.5 h-9 text-xs"
                             >
-                                <Plus className="w-4 h-4" />
+                                <Plus className="w-3 h-3" />
                                 Añadir Producto
                             </button>
                         </div>
 
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             {items.map((item, index) => (
-                                <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_80px_150px_130px_40px] gap-3 items-end p-4 bg-background rounded-2xl border border-[#e8eeee]">
+                                <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_80px_150px_130px_40px] gap-3 items-end p-3 bg-background rounded-2xl border border-[#e8eeee]">
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-bold text-muted uppercase ml-1">Descripción</label>
                                         <input
                                             type="text"
-                                            className="form-control py-2"
+                                            className="form-control py-2 h-10 text-sm"
                                             placeholder="Nombre del producto"
                                             value={item.description}
                                             onChange={e => updateItem(index, 'description', e.target.value)}
@@ -130,7 +130,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                                         <label className="text-[10px] font-bold text-muted uppercase ml-1">Cant.</label>
                                         <input
                                             type="number"
-                                            className="form-control py-2 text-center"
+                                            className="form-control py-2 h-10 text-sm text-center"
                                             min="1"
                                             value={item.quantity}
                                             onChange={e => updateItem(index, 'quantity', parseInt(e.target.value) || 0)}
@@ -141,7 +141,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                                         <label className="text-[10px] font-bold text-muted uppercase ml-1">Precio Unit.</label>
                                         <input
                                             type="text"
-                                            className="form-control py-2"
+                                            className="form-control py-2 h-10 text-sm"
                                             value={(item.price ?? 0).toLocaleString()}
                                             onChange={e => updateItem(index, 'price', e.target.value)}
                                             required
@@ -150,7 +150,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
 
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-bold text-muted uppercase ml-1">Total</label>
-                                        <div className="bg-white border border-[#e8eeee] rounded-xl px-3 py-2 text-sm font-bold text-primary flex items-center h-[46px]">
+                                        <div className="bg-white border border-[#e8eeee] rounded-xl px-3 py-2 text-sm font-bold text-primary flex items-center h-10">
                                             {formatCurrency(item.quantity * (item.price ?? 0))}
                                         </div>
                                     </div>
@@ -158,7 +158,7 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveItem(index)}
-                                        className="p-3 text-danger hover:bg-red-50 rounded-xl transition-colors h-[46px] flex items-center justify-center"
+                                        className="p-2 text-danger hover:bg-red-50 rounded-xl transition-colors h-10 flex items-center justify-center"
                                         disabled={items.length === 1}
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -168,20 +168,19 @@ export const SaleForm = ({ sale, clients, onSubmit, onClose }: SaleFormProps) =>
                         </div>
                     </div>
 
-                    <div className="pt-6 border-t border-[#e8eeee] flex flex-col items-end">
-                        <div className="text-right space-y-1">
-                            <span className="text-sm text-muted">Total Venta</span>
-                            <div className="text-3xl font-bold text-primary">{formatCurrency(grandTotal)}</div>
+                    <div className="pt-4 border-t border-[#e8eeee] flex justify-between items-end">
+                        <div className="flex gap-2">
+                            <button type="button" onClick={onClose} className="btn btn-ghost px-6 h-11 text-sm">
+                                Cancelar
+                            </button>
+                            <button type="submit" className="btn btn-primary px-6 h-11 text-sm" disabled={loading}>
+                                {loading ? 'Guardando...' : sale ? 'Actualizar Venta' : 'Registrar Venta'}
+                            </button>
                         </div>
-                    </div>
-
-                    <div className="flex justify-end gap-3 mt-8">
-                        <button type="button" onClick={onClose} className="btn btn-ghost px-8">
-                            Cancelar
-                        </button>
-                        <button type="submit" className="btn btn-primary px-8" disabled={loading}>
-                            {loading ? 'Guardando...' : sale ? 'Actualizar Venta' : 'Registrar Venta'}
-                        </button>
+                        <div className="text-right">
+                            <span className="text-xs text-muted uppercase font-bold tracking-wider">Total</span>
+                            <div className="text-2xl font-bold text-primary leading-none mt-1">{formatCurrency(grandTotal)}</div>
+                        </div>
                     </div>
                 </form>
             </div>
