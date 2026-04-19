@@ -119,7 +119,7 @@ export default function ClientsPage() {
                                 <tr>
                                     <th className="p-4 text-sm font-semibold text-muted">Nombre</th>
                                     <th className="p-4 text-sm font-semibold text-muted">Contacto</th>
-                                    <th className="p-4 text-sm font-semibold text-muted">Ubicación</th>
+                                    <th className="p-4 text-sm font-semibold text-muted hidden md:table-cell">Ubicación</th>
                                     <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
                                 </tr>
                             </thead>
@@ -142,7 +142,7 @@ export default function ClientsPage() {
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="p-4">
+                                        <td className="p-4 hidden md:table-cell">
                                             <div className="flex items-center gap-2 text-sm">
                                                 <MapPin className="w-3 h-3 text-accent" />
                                                 {client.address || 'Sin dirección'}
@@ -154,9 +154,6 @@ export default function ClientsPage() {
                                                     client.departamento || client.state
                                                 ].filter(Boolean).join(', ') || '-'}
                                             </div>
-
-
-
                                         </td>
                                         <td className="p-4 text-right">
                                             <div className="flex justify-end gap-2">
@@ -172,7 +169,7 @@ export default function ClientsPage() {
                                 ))}
                                 {filteredClients.length === 0 && (
                                     <tr>
-                                        <td colSpan={4} className="p-12 text-center">
+                                        <td colSpan={3} className="md:col-span-4 p-12 text-center">
                                             <div className="flex flex-col items-center gap-3 text-muted">
                                                 <UserPlus className="w-12 h-12 opacity-20" />
                                                 <p>No se encontraron clientes.</p>

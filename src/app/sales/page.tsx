@@ -120,9 +120,9 @@ export default function SalesPage() {
                             <thead className="bg-sidebar">
                                 <tr>
                                     <th className="p-4 text-sm font-semibold text-muted">No. Venta</th>
-                                    <th className="p-4 text-sm font-semibold text-muted">Fecha</th>
+                                    <th className="p-4 text-sm font-semibold text-muted hidden md:table-cell">Fecha</th>
                                     <th className="p-4 text-sm font-semibold text-muted">Cliente</th>
-                                    <th className="p-4 text-sm font-semibold text-muted text-center">Estado</th>
+                                    <th className="p-4 text-sm font-semibold text-muted text-center hidden sm:table-cell">Estado</th>
                                     <th className="p-4 text-sm font-semibold text-muted">Total</th>
                                     <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
                                 </tr>
@@ -135,20 +135,20 @@ export default function SalesPage() {
                                                 {sale.saleNumber}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-sm text-muted">
+                                        <td className="p-4 text-sm text-muted hidden md:table-cell">
                                             {formatDate(sale.date)}
                                         </td>
                                         <td className="p-4">
                                             <div className="font-semibold text-main">{sale.clientName}</div>
                                         </td>
-                                        <td className="p-4 text-center">
+                                        <td className="p-4 text-center hidden sm:table-cell">
                                             <span className={cn(
                                                 "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
                                                 sale.paid
                                                     ? "bg-green-50 text-green-600 border border-green-100"
                                                     : "bg-red-50 text-red-600 border border-red-100"
                                             )}>
-                                                {sale.paid ? 'Pagada' : 'Pendiente'}
+                                                {sale.paid ? 'Pagado' : 'Pendiente'}
                                             </span>
                                         </td>
                                         <td className="p-4">
