@@ -121,72 +121,74 @@ export default function UsersPage() {
                     </button>
                 </header>
 
-                <div className="glass-card overflow-hidden">
+                <div className="space-y-4">
                     {/* Desktop Table View */}
-                    <div className="hidden md:block overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="bg-sidebar">
-                                <tr>
-                                    <th className="p-4 text-sm font-semibold text-muted">Nombre</th>
-                                    <th className="p-4 text-sm font-semibold text-muted">Email</th>
-                                    <th className="p-4 text-sm font-semibold text-muted">Rol</th>
-                                    <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#e8eeee]">
-                                {users.map((u) => (
-                                    <tr key={u.id} className="hover:bg-sidebar/30 transition-colors">
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-xs">
-                                                    {u.name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span className="font-semibold">{u.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-sm text-muted">
-                                            {u.email}
-                                        </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-2">
-                                                {u.role === 'Super Admin' ? (
-                                                    <Crown className="w-4 h-4 text-amber-500" />
-                                                ) : u.role === 'Admin' ? (
-                                                    <Shield className="w-4 h-4 text-primary" />
-                                                ) : (
-                                                    <UserIcon className="w-4 h-4 text-muted" />
-                                                )}
-                                                <span className={cn(
-                                                    "text-xs font-bold px-2 py-1 rounded-lg",
-                                                    u.role === 'Super Admin' ? "bg-amber-50 text-amber-600" :
-                                                        u.role === 'Admin' ? "bg-primary/5 text-primary" : "bg-sidebar text-muted"
-                                                )}>
-                                                    {u.role}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <div className="flex justify-end gap-2">
-                                                <button onClick={() => handleOpenModal(u)} className="btn-icon">
-                                                    <Edit2 className="w-3 h-3" />
-                                                </button>
-                                                {u.uid !== currentUser.uid && (
-                                                    <button onClick={() => handleDelete(u)} className="btn-icon text-danger border-none hover:bg-red-50">
-                                                        <Trash2 className="w-3 h-3" />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
+                    <div className="hidden md:block glass-card overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead className="bg-sidebar">
+                                    <tr>
+                                        <th className="p-4 text-sm font-semibold text-muted">Nombre</th>
+                                        <th className="p-4 text-sm font-semibold text-muted">Email</th>
+                                        <th className="p-4 text-sm font-semibold text-muted">Rol</th>
+                                        <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-[#e8eeee]">
+                                    {users.map((u) => (
+                                        <tr key={u.id} className="hover:bg-sidebar/30 transition-colors">
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-xs">
+                                                        {u.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <span className="font-semibold">{u.name}</span>
+                                                </div>
+                                            </td>
+                                            <td className="p-4 text-sm text-muted">
+                                                {u.email}
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-2">
+                                                    {u.role === 'Super Admin' ? (
+                                                        <Crown className="w-4 h-4 text-amber-500" />
+                                                    ) : u.role === 'Admin' ? (
+                                                        <Shield className="w-4 h-4 text-primary" />
+                                                    ) : (
+                                                        <UserIcon className="w-4 h-4 text-muted" />
+                                                    )}
+                                                    <span className={cn(
+                                                        "text-xs font-bold px-2 py-1 rounded-lg",
+                                                        u.role === 'Super Admin' ? "bg-amber-50 text-amber-600" :
+                                                            u.role === 'Admin' ? "bg-primary/5 text-primary" : "bg-sidebar text-muted"
+                                                    )}>
+                                                        {u.role}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="p-4 text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    <button onClick={() => handleOpenModal(u)} className="btn-icon">
+                                                        <Edit2 className="w-3 h-3" />
+                                                    </button>
+                                                    {u.uid !== currentUser.uid && (
+                                                        <button onClick={() => handleDelete(u)} className="btn-icon text-danger border-none hover:bg-red-50">
+                                                            <Trash2 className="w-3 h-3" />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     {/* Mobile Card View */}
-                    <div className="md:hidden divide-y divide-[#e8eeee]">
+                    <div className="md:hidden space-y-4">
                         {users.map((u) => (
-                            <div key={u.id} className="p-6 space-y-4">
+                            <div key={u.id} className="glass-card p-6 space-y-4">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3">
                                         <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center text-accent font-bold text-lg">
