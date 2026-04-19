@@ -113,13 +113,14 @@ export default function ClientsPage() {
                 </div>
 
                 <div className="glass-card overflow-hidden">
-                    <div className="overflow-x-auto">
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-sidebar">
                                 <tr>
                                     <th className="p-4 text-sm font-semibold text-muted">Nombre</th>
                                     <th className="p-4 text-sm font-semibold text-muted">Contacto</th>
-                                    <th className="p-4 text-sm font-semibold text-muted hidden md:table-cell">Ubicación</th>
+                                    <th className="p-4 text-sm font-semibold text-muted hidden lg:table-cell">Ubicación</th>
                                     <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
                                 </tr>
                             </thead>
@@ -142,7 +143,7 @@ export default function ClientsPage() {
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="p-4 hidden md:table-cell">
+                                        <td className="p-4 hidden lg:table-cell">
                                             <div className="flex items-center gap-2 text-sm">
                                                 <MapPin className="w-3 h-3 text-accent" />
                                                 {client.address || 'Sin dirección'}
@@ -169,16 +170,68 @@ export default function ClientsPage() {
                                 ))}
                                 {filteredClients.length === 0 && (
                                     <tr>
-                                        <td colSpan={3} className="md:col-span-4 p-12 text-center">
-                                            <div className="flex flex-col items-center gap-3 text-muted">
-                                                <UserPlus className="w-12 h-12 opacity-20" />
-                                                <p>No se encontraron clientes.</p>
-                                            </div>
+                                        <td colSpan={4} className="p-12 text-center text-muted">
+                                            <UserPlus className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                            No se encontraron clientes.
                                         </td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-[#e8eeee]">
+                        {filteredClients.map((client) => (
+                            <div key={client.id} className="p-6 space-y-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <div className="font-bold text-lg text-main">{client.name}</div>
+                                        <div className="text-xs text-muted">ID: {client.id.slice(0, 8)}</div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => handleOpenModal(client)} className="btn-icon w-10 h-10">
+                                            <Edit2 className="w-5 h-5" />
+                                        </button>
+                                        <button onClick={() => handleDelete(client.id)} className="btn-icon w-10 h-10 text-danger border-none hover:bg-red-50">
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-2 text-sm">
+                                    <div className="flex items-center gap-3 p-2 bg-sidebar/50 rounded-xl">
+                                        <Phone className="w-4 h-4 text-primary" />
+                                        <span className="font-medium">{client.phone}</span>
+                                    </div>
+                                    {client.email && (
+                                        <div className="flex items-center gap-3 p-2 bg-sidebar/50 rounded-xl">
+                                            <Mail className="w-4 h-4 text-muted" />
+                                            <span className="truncate">{client.email}</span>
+                                        </div>
+                                    )}
+                                    <div className="flex items-start gap-3 p-2 bg-sidebar/50 rounded-xl">
+                                        <MapPin className="w-4 h-4 text-accent mt-0.5" />
+                                        <div className="flex flex-col">
+                                            <span className="font-medium">{client.address || 'Sin dirección'}</span>
+                                            <span className="text-xs text-muted">
+                                                {[
+                                                    client.barrio || client.neighborhood,
+                                                    client.ciudad || client.city,
+                                                    client.departamento || client.state
+                                                ].filter(Boolean).join(', ') || '-'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        {filteredClients.length === 0 && (
+                            <div className="p-12 text-center text-muted">
+                                <UserPlus className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                No se encontraron clientes.
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -122,7 +122,8 @@ export default function UsersPage() {
                 </header>
 
                 <div className="glass-card overflow-hidden">
-                    <div className="overflow-x-auto">
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-sidebar">
                                 <tr>
@@ -180,6 +181,55 @@ export default function UsersPage() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-[#e8eeee]">
+                        {users.map((u) => (
+                            <div key={u.id} className="p-6 space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center text-accent font-bold text-lg">
+                                            {u.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-main">{u.name}</div>
+                                            <div className="text-xs text-muted leading-tight">{u.email}</div>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => handleOpenModal(u)} className="btn-icon w-10 h-10">
+                                            <Edit2 className="w-5 h-5" />
+                                        </button>
+                                        {u.uid !== currentUser.uid && (
+                                            <button onClick={() => handleDelete(u)} className="btn-icon w-10 h-10 text-danger border-none hover:bg-red-50">
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between p-3 bg-sidebar/50 rounded-xl">
+                                    <span className="text-xs font-medium text-muted">Tipo de Cuenta</span>
+                                    <div className="flex items-center gap-2">
+                                        {u.role === 'Super Admin' ? (
+                                            <Crown className="w-4 h-4 text-amber-500" />
+                                        ) : u.role === 'Admin' ? (
+                                            <Shield className="w-4 h-4 text-primary" />
+                                        ) : (
+                                            <UserIcon className="w-4 h-4 text-muted" />
+                                        )}
+                                        <span className={cn(
+                                            "text-xs font-bold",
+                                            u.role === 'Super Admin' ? "text-amber-600" :
+                                                u.role === 'Admin' ? "text-primary" : "text-muted"
+                                        )}>
+                                            {u.role}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
