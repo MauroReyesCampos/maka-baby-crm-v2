@@ -1,0 +1,265 @@
+"use client";
+
+import React, { useState } from 'react';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import { useStore } from '@/hooks/useStore';
+import { useAuth } from '@/context/AuthContext';
+import {
+    Plus,
+    Trash2,
+    Shield,
+    Edit2,
+    X,
+    Mail,
+    User as UserIcon,
+    Crown
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { User, UserRole } from '@/types';
+import { auth, db } from '@/lib/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc, query, collection, where, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
+
+export default function UsersPage() {
+    const { users, loading: usersLoading } = useStore();
+    const { user: currentUser } = useAuth();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        role: 'Vendedor' as UserRole
+    });
+    const [loading, setLoading] = useState(false);
+
+    // Verification: only Super Admin can see this page
+    if (currentUser?.role !== 'Super Admin') {
+        return (
+            <DashboardLayout>
+                <div className="h-full flex items-center justify-center p-10 text-center">
+                    <div className="max-w-md space-y-4">
+                        <Shield className="w-16 h-16 text-danger mx-auto opacity-20" />
+                        <h1 className="text-2xl font-bold">Acceso Denegado</h1>
+                        <p className="text-muted">Solo los Super Administradores pueden gestionar usuarios.</p>
+                    </div>
+                </div>
+            </DashboardLayout>
+        );
+    }
+
+    const handleOpenModal = (user?: User) => {
+        if (user) {
+            setEditingUser(user);
+            setFormData({
+                name: user.name,
+                email: user.email,
+                password: '', // Password cannot be edited here
+                role: user.role
+            });
+        } else {
+            setEditingUser(null);
+            setFormData({ name: '', email: '', password: '', role: 'Vendedor' });
+        }
+        setIsModalOpen(true);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            if (editingUser) {
+                await updateDoc(doc(db, "users", editingUser.id), {
+                    name: formData.name,
+                    role: formData.role
+                });
+            } else {
+                // Registering a new user via client side will LOG OUT the admin.
+                // I will add a warning/note about this or use a prompt.
+                if (confirm('Atención: Al crear un usuario nuevo desde esta pantalla, su sesión actual se cerrará para registrar al nuevo usuario. ¿Desea continuar?')) {
+                    const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+                    const newUser = userCredential.user;
+                    await updateProfile(newUser, { displayName: formData.name });
+                    await setDoc(doc(db, "users", newUser.uid), {
+                        uid: newUser.uid,
+                        name: formData.name,
+                        email: formData.email,
+                        role: formData.role,
+                        createdAt: new Date().toISOString()
+                    });
+                    alert('Usuario creado con éxito. Por favor vuelva a iniciar sesión con su cuenta de administrador.');
+                    window.location.href = '/login';
+                    return;
+                }
+            }
+            setIsModalOpen(false);
+        } catch (error: any) {
+            alert(`Error: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (userToDelete: User) => {
+        if (userToDelete.uid === currentUser.uid) return alert('No puedes eliminarte a ti mismo.');
+        if (confirm(`¿Estás seguro de eliminar a ${userToDelete.name}?`)) {
+            await deleteDoc(doc(db, "users", userToDelete.id));
+        }
+    };
+
+    return (
+        <DashboardLayout>
+            <div className="space-y-8 animate-in fade-in duration-700">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight text-main">Usuarios</h1>
+                        <p className="text-muted mt-1">Gestión de equipo y permisos.</p>
+                    </div>
+                    <button onClick={() => handleOpenModal()} className="btn btn-primary">
+                        <Plus className="w-5 h-5" />
+                        Nuevo Usuario
+                    </button>
+                </header>
+
+                <div className="glass-card overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead className="bg-sidebar">
+                                <tr>
+                                    <th className="p-4 text-sm font-semibold text-muted">Nombre</th>
+                                    <th className="p-4 text-sm font-semibold text-muted">Email</th>
+                                    <th className="p-4 text-sm font-semibold text-muted">Rol</th>
+                                    <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[#e8eeee]">
+                                {users.map((u) => (
+                                    <tr key={u.id} className="hover:bg-sidebar/30 transition-colors">
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-xs">
+                                                    {u.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                <span className="font-semibold">{u.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="p-4 text-sm text-muted">
+                                            {u.email}
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-2">
+                                                {u.role === 'Super Admin' ? (
+                                                    <Crown className="w-4 h-4 text-amber-500" />
+                                                ) : u.role === 'Admin' ? (
+                                                    <Shield className="w-4 h-4 text-primary" />
+                                                ) : (
+                                                    <UserIcon className="w-4 h-4 text-muted" />
+                                                )}
+                                                <span className={cn(
+                                                    "text-xs font-bold px-2 py-1 rounded-lg",
+                                                    u.role === 'Super Admin' ? "bg-amber-50 text-amber-600" :
+                                                        u.role === 'Admin' ? "bg-primary/5 text-primary" : "bg-sidebar text-muted"
+                                                )}>
+                                                    {u.role}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="p-4 text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <button onClick={() => handleOpenModal(u)} className="btn-icon">
+                                                    <Edit2 className="w-3 h-3" />
+                                                </button>
+                                                {u.uid !== currentUser.uid && (
+                                                    <button onClick={() => handleDelete(u)} className="btn-icon text-danger border-none hover:bg-red-50">
+                                                        <Trash2 className="w-3 h-3" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {/* User Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
+                    <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl animate-in zoom-in-95 duration-300">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-primary">
+                                {editingUser ? 'Editar Usuario' : 'Nuevo Usuario'}
+                            </h2>
+                            <button onClick={() => setIsModalOpen(false)} className="btn-icon">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-muted ml-0.5">Nombre Completo</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    required
+                                />
+                            </div>
+
+                            {!editingUser && (
+                                <>
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-muted ml-0.5">Correo Electrónico</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            value={formData.email}
+                                            onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-muted ml-0.5">Contraseña</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            value={formData.password}
+                                            onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                            required
+                                            minLength={6}
+                                        />
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-muted ml-0.5">Rol de Usuario</label>
+                                <select
+                                    className="form-control"
+                                    value={formData.role}
+                                    onChange={e => setFormData({ ...formData, role: e.target.value as UserRole })}
+                                >
+                                    <option value="Vendedor">Vendedor</option>
+                                    <option value="Admin">Administrador</option>
+                                    <option value="Super Admin">Super Administrador</option>
+                                </select>
+                            </div>
+
+                            <div className="flex justify-end gap-3 mt-8">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="btn btn-ghost px-6">
+                                    Cancelar
+                                </button>
+                                <button type="submit" className="btn btn-primary px-6" disabled={loading}>
+                                    {loading ? 'Guardando...' : editingUser ? 'Guardar Cambios' : 'Crear Usuario'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </DashboardLayout>
+    );
+}

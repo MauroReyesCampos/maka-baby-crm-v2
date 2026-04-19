@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+
+
+@theme {
+  --color-primary: #f8b1b1;
+  --color-primary-hover: #f59a9a;
+  --color-background: #fbfbfb;
+  --color-sidebar: #f2f7f6;
+  --color-main: #5d5d5d;
+  --color-muted: #9aa5a3;
+  --color-accent: #b8dad1;
+  --color-danger: #f2a6a6;
+
+
+  --shadow-glass: 0 8px 20px 0 rgba(0, 0, 0, 0.05);
+
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
+
+@layer base {
+  :root {
+    --primary: #f8b1b1;
+    --primary-hover: #f59a9a;
+    --bg-dark: #fbfbfb;
+    --bg-sidebar: #f2f7f6;
+    --text-main: #5d5d5d;
+    --text-muted: #9aa5a3;
+    --accent: #b8dad1;
+    --danger: #f2a6a6;
+  }
+}
+
+body {
+  @apply bg-background text-main antialiased;
+  font-family: 'Outfit', sans-serif;
+}
+
+
+.glass-card {
+  @apply bg-white border border-[#e8eeee] rounded-[20px] shadow-glass;
+}
+
+.btn {
+  @apply px-5 py-2.5 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-primary-hover hover:-translate-y-0.5 hover:shadow-lg;
+}
+
+.btn-ghost {
+  @apply bg-transparent border border-[#e8eeee] text-muted hover:bg-white hover:text-main;
+}
+
+.btn-icon {
+  @apply w-8 h-8 flex items-center justify-center bg-white border border-[#e8eeee] rounded-lg transition-all hover:bg-primary hover:border-primary hover:text-white hover:scale-110;
+}
+
+.form-control {
+  @apply w-full px-4 py-3 bg-background border border-[#e8eeee] rounded-xl focus:outline-none focus:border-primary focus:bg-white transition-all;
+}
+
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+
+::-webkit-scrollbar-thumb {
+  @apply bg-[#e8eeee] rounded-full hover:bg-muted;
+}
