@@ -10,8 +10,6 @@ import {
     UserCircle,
     Settings,
     LogOut,
-    Menu,
-    X
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
@@ -43,13 +41,7 @@ export const Sidebar = () => {
 
     return (
         <>
-            {/* Mobile Toggle */}
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden fixed top-4 left-4 z-50 btn-icon"
-            >
-                {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+            {/* Mobile Toggle Removed as requested */}
 
             {/* Sidebar */}
             <aside className={cn(
@@ -108,13 +100,7 @@ export const Sidebar = () => {
                 </div>
             </aside>
 
-            {/* Overlay */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:hidden"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
+
         </>
     );
 };
