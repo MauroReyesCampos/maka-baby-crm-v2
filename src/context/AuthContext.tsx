@@ -25,20 +25,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
                         setUser({
+                            id: firebaseUser.uid,
                             uid: firebaseUser.uid,
                             name: userData.name || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuario',
                             email: firebaseUser.email || '',
                             role: (userData.role as UserRole) || 'Vendedor',
                             createdAt: userData.createdAt
                         });
+
                     } else {
                         // Fallback for users without a document in 'users' collection
                         setUser({
+                            id: firebaseUser.uid,
                             uid: firebaseUser.uid,
                             name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuario',
                             email: firebaseUser.email || '',
                             role: 'Vendedor'
                         });
+
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);

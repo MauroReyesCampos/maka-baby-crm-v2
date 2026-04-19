@@ -1,6 +1,7 @@
 export type UserRole = 'Super Admin' | 'Admin' | 'Vendedor' | 'Invitado';
 
 export interface User {
+    id: string;
     uid: string;
     name: string;
     email: string;
