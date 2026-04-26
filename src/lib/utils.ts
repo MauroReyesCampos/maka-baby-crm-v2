@@ -10,11 +10,19 @@ export function formatCurrency(amount: number) {
         style: 'currency',
         currency: 'COP',
         minimumFractionDigits: 0,
-    }).format(amount);
+    }).format(amount).replace(/\s/g, '');
 }
 
 export function formatDate(date: string) {
     return new Intl.DateTimeFormat('es-CO', {
         dateStyle: 'medium',
     }).format(new Date(date));
+}
+
+export function formatDateSimple(date: string) {
+    const d = new Date(date);
+    const day = d.getUTCDate();
+    const month = d.getUTCMonth() + 1;
+    const year = d.getUTCFullYear();
+    return `${day}/${month}/${year}`;
 }

@@ -6,10 +6,12 @@ import Link from 'next/link';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -63,13 +65,22 @@ export default function LoginPage() {
                     </div>
                     <div className="space-y-1.5">
                         <label className="text-sm font-medium text-muted ml-1">Contraseña</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                className="form-control pr-12"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors focus:outline-none"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                        </div>
                     </div>
                     <button
                         type="submit"

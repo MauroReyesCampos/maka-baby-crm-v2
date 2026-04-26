@@ -46,7 +46,7 @@ export const Sidebar = () => {
             {/* Mobile Toggle */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="lg:!hidden fixed top-4 right-4 z-50 w-11 h-11 flex items-center justify-center bg-white border border-[#e8eeee] rounded-xl shadow-lg text-primary active:scale-90 transition-transform"
+                className="lg:!hidden fixed top-4 right-4 z-50 w-11 h-11 flex items-center justify-center bg-white border border-[#e8eeee] rounded-xl shadow-lg text-primary active:scale-90 transition-transform print:hidden"
             >
                 {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -54,7 +54,7 @@ export const Sidebar = () => {
 
             {/* Sidebar */}
             <aside className={cn(
-                "fixed inset-y-0 left-0 z-40 w-72 bg-sidebar border-r border-[#e8eeee] flex flex-col transition-transform duration-300 transform lg:translate-x-0",
+                "fixed inset-y-0 left-0 z-40 w-72 bg-sidebar border-r border-[#e8eeee] flex flex-col transition-transform duration-300 transform lg:translate-x-0 print:hidden",
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="p-6 flex items-center gap-3">
@@ -113,7 +113,7 @@ export const Sidebar = () => {
             {/* Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:!hidden"
+                    className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:!hidden print:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}

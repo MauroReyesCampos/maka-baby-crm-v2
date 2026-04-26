@@ -23,6 +23,7 @@ export interface Client {
     city?: string; // Legacy
     departamento?: string;
     state?: string; // Legacy
+    nit?: string;
     createdAt: string;
 }
 

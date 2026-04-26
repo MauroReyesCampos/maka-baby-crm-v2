@@ -33,13 +33,15 @@ export default function ClientsPage() {
         complemento: '',
         barrio: '',
         ciudad: '',
-        departamento: ''
+        departamento: '',
+        nit: ''
     });
 
 
     const filteredClients = clients.filter(c =>
         c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.phone.includes(searchTerm)
+        c.phone.includes(searchTerm) ||
+        (c.nit && c.nit.includes(searchTerm))
     );
 
     const handleOpenModal = (client?: Client) => {
@@ -53,13 +55,14 @@ export default function ClientsPage() {
                 complemento: client.complemento || client.complement || '',
                 barrio: client.barrio || client.neighborhood || '',
                 ciudad: client.ciudad || client.city || '',
-                departamento: client.departamento || client.state || ''
+                departamento: client.departamento || client.state || '',
+                nit: client.nit || ''
             });
 
 
         } else {
             setEditingClient(null);
-            setFormData({ name: '', phone: '', email: '', address: '', complemento: '', barrio: '', ciudad: '', departamento: '' });
+            setFormData({ name: '', phone: '', email: '', address: '', complemento: '', barrio: '', ciudad: '', departamento: '', nit: '' });
         }
 
         setIsModalOpen(true);
@@ -105,7 +108,7 @@ export default function ClientsPage() {
                     </div>
                     <input
                         type="text"
-                        placeholder="Buscar por nombre o teléfono..."
+                        placeholder="Buscar por nombre, teléfono o NIT..."
                         className="flex-1 bg-transparent border-none focus:ring-0 p-2 text-main"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -119,7 +122,7 @@ export default function ClientsPage() {
                             <table className="w-full text-left border-collapse">
                                 <thead className="bg-sidebar">
                                     <tr>
-                                        <th className="p-4 text-sm font-semibold text-muted">Nombre</th>
+                                        <th className="p-4 text-sm font-semibold text-muted">Nombre / NIT</th>
                                         <th className="p-4 text-sm font-semibold text-muted">Contacto</th>
                                         <th className="p-4 text-sm font-semibold text-muted hidden lg:table-cell">Ubicación</th>
                                         <th className="p-4 text-sm font-semibold text-muted text-right">Acciones</th>
@@ -130,7 +133,7 @@ export default function ClientsPage() {
                                         <tr key={client.id} className="hover:bg-sidebar/30 transition-colors">
                                             <td className="p-4">
                                                 <div className="font-semibold text-main">{client.name}</div>
-                                                <div className="text-xs text-muted">ID: {client.id.slice(0, 8)}</div>
+                                                <div className="text-xs text-muted">NIT/CC: {client.nit || 'Sin definir'}</div>
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2 text-sm">
@@ -189,7 +192,7 @@ export default function ClientsPage() {
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <div className="font-bold text-lg text-main">{client.name}</div>
-                                        <div className="text-xs text-muted">ID: {client.id.slice(0, 8)}</div>
+                                        <div className="text-xs text-muted">NIT/CC: {client.nit || 'Sin definir'}</div>
                                     </div>
                                     <div className="flex gap-2">
                                         <button onClick={() => handleOpenModal(client)} className="btn-icon w-10 h-10">
@@ -252,18 +255,26 @@ export default function ClientsPage() {
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-3">
-                            <div className="space-y-1">
-                                <label className="text-xs font-semibold text-muted ml-1">Nombre Completo</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    required
-                                    value={formData.name}
-                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="space-y-1 md:col-span-2">
+                                    <label className="text-xs font-semibold text-muted ml-1">Nombre Completo</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        required
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-semibold text-muted ml-1">NIT / C.C.</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={formData.nit}
+                                        onChange={e => setFormData({ ...formData, nit: e.target.value })}
+                                    />
+                                </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-semibold text-muted ml-1">Teléfono</label>
                                     <input
@@ -274,15 +285,16 @@ export default function ClientsPage() {
                                         onChange={e => setFormData({ ...formData, phone: e.target.value })}
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-muted ml-1">Email (Opcional)</label>
-                                    <input
-                                        type="email"
-                                        className="form-control"
-                                        value={formData.email}
-                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                    />
-                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold text-muted ml-1">Email (Opcional)</label>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    value={formData.email}
+                                    onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
